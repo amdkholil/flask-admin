@@ -1,19 +1,17 @@
-from flask_admin import Admin
-from flask_admin.contrib.sqla import ModelView
-# from flask_login import current_user
-from ..models.user import User
-# from ..models.post import Post
+
+from flask_admin import Admin, menu
+from ..models.user import User, UserModelView
 from ..extensions import db
-
-# Custom ModelView for User with restricted access
-class UserModelView(ModelView):
-    def is_accessible(self):
-        # return current_user.is_authenticated and current_user.is_admin
-        return True
-
 
 
 # Initialize Flask-Admin and add views
 def init_admin(app):
+    app.config['FLASK_ADMIN_SWATCH'] = 'simplex'
     admin = Admin(app, name='Admin', template_mode='bootstrap4')
+    
+    # Add logout link in the menu navbar
+    admin.add_link(menu.MenuLink(name='Logout', url='/logout', icon_type='fa', icon_value='fa-sign-out'))
+    
+    # Add views
     admin.add_view(UserModelView(User, db.session))
+    
